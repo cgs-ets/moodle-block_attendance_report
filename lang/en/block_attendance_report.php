@@ -56,3 +56,4 @@ $string['percentageattendedforterm'] = 'Percentage attended';
 $string['profile'] = 'Profile';
 $string['attbasedonrollmarking'] = 'Attendance based on roll marking';
 $string['attbasedonrmtitle'] = 'Full class attendance this term based on roll marking';
+$string['nosignin'] = 'No sign-in';

@@ -145,6 +145,7 @@ function get_student_attendance_based_on_rollmarking() {
             foreach ($months as $key => $month) {
                 $daydetails = new \stdClass();
                 $classcode = [];
+                $time = "06:00 AM";
 
                 list($daydetails->month, $daydetails->attendancedate) = explode('_', $key);
 
@@ -154,6 +155,7 @@ function get_student_attendance_based_on_rollmarking() {
                         switch ($j) {
                             case 'housesignin':
                                 $daydetails->housesignin = $q;
+                                $daydetails->late  = strtotime($q) < strtotime($time);
                                 break;
                             case 'classdescription':
 
