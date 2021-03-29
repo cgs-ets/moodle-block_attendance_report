@@ -28,9 +28,7 @@ global $DB, $OUTPUT, $PAGE;
 // Check for all required variables.
 $courseid = required_param('courseid', PARAM_INT);
 $blockid = required_param('blockid', PARAM_INT);
-
-// Next look for optional variables.
-$id = optional_param('id', 0, PARAM_INT);
+$id = $PAGE->url->get_param('id');
 
 if (!$course = $DB->get_record('course', array('id' => $courseid))) {
     print_error('invalidcourse', 'block_attendance_report', $courseid);
@@ -44,7 +42,7 @@ $PAGE->set_title(get_string('pluginname', 'block_attendance_report'));
 $PAGE->set_heading(get_string('attendance_report', 'block_attendance_report'));
 
 
-$nav = $PAGE->navigation->add(get_string('profile', 'block_attendance_report'), $CFG->wwwroot.'/user/view.php?id='.$USER->id);
+$nav = $PAGE->navigation->add(get_string('profile', 'block_attendance_report'), $CFG->wwwroot . '/user/view.php?id=' . $id);
 $reporturl = new moodle_url('/blocks/attendance_report/view.php', array('id' => $id, 'courseid' => $courseid, 'blockid' => $blockid));
 $reportnode = $nav->add(get_string('attbasedonrollmarking', 'block_attendance_report'), $reporturl);
 $reportnode->make_active();
@@ -52,7 +50,15 @@ $reportnode->make_active();
 echo $OUTPUT->header();
 
 $data = new stdClass();
-$data->days = get_student_attendance_based_on_rollmarking();
+
+$profileuser = $DB->get_record('user', ['id' => $id]);
+if (is_siteadmin($USER)) {
+    $data->studentname = $profileuser->firstname . ' ' .  $profileuser->lastname;
+} else {
+    $data->studentname = $USER->firstname . ' ' .  $USER->lastname;
+}
+
+$data->days = get_student_attendance_based_on_rollmarking($profileuser);
 
 echo $OUTPUT->render_from_template('block_attendance_report/attendance_based_on_rollmarking', $data);
 echo $OUTPUT->footer();

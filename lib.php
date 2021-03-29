@@ -28,7 +28,7 @@
  */
 
  function get_template_context($data, $instanceid) {
-    global $USER, $COURSE;
+    global  $COURSE;
 
     $urlparams = array('blockid' => $instanceid, 'courseid' => $COURSE->id);
 
@@ -40,8 +40,7 @@
 /**
  * Call to the SP Class_Attendance_By_Term
  */
-function get_attendance_by_term() {
-    global $USER;
+function get_attendance_by_term($profileuser) {
 
     try {
 
@@ -56,20 +55,19 @@ function get_attendance_by_term() {
         $sql = 'EXEC ' . $config->dbattbyterm . ' :id';
 
         $params = array(
-            'id' => $USER->username,
+            'id' => $profileuser->username,
         );
 
         $attendancedata = $externalDB->get_records_sql($sql, $params);
         return $attendancedata;
         
     } catch (Exception $ex) {
-        //TODO: DO something with the error.
+       throw $ex;
     }
 }
 
-function get_attendance_by_class() {
-    global $USER;
-
+function get_attendance_by_class($profileuser) {
+   
     try {
         $config = get_config('block_attendance_report');
 
@@ -81,31 +79,31 @@ function get_attendance_by_class() {
         $sql = 'EXEC ' . $config->dbattbyclass . ' :id';
 
         $params = array(
-            'id' => $USER->username,
+            'id' =>$profileuser->username,
         );
 
         $attendancedata = $externalDB->get_records_sql($sql, $params);
       
         return $attendancedata;
     } catch (Exception $ex) {
-        //TODO: DO something with the error.
+        throw $ex;
     }
 }
 
 // Full Class attendance current Term based on roll marking
-function get_student_attendance_based_on_rollmarking() {
-    global $USER;
+function get_student_attendance_based_on_rollmarking($profileuser) {
     try {
+        global $USER;
         $config = get_config('block_attendance_report');
-        $externalDB = moodle_database::get_driver_instance($config->dbtype, 'native', true);
-
+        $externalDB = moodle_database::get_driver_instance($config->dbtype, 'native', true);       
+        
         // Connect to external DB
         $externalDB->connect($config->dbhost, $config->dbuser, $config->dbpass, $config->dbname, '');
 
         $sql = 'EXEC ' . $config->dbattbytermbyid . ' :id';
 
         $params = array(
-            'id' => $USER->username,
+            'id' => $profileuser->username,
         );
         $attendancedata = $externalDB->get_recordset_sql($sql, $params);
 
@@ -135,9 +133,7 @@ function get_student_attendance_based_on_rollmarking() {
 
         }
 
-
         $attendancedata->close();
-
 
         array_walk($monthsdata, function($months) use (&$monthsdata, &$days, $createDate,
             $monthlabel, $classcodes, $monthdates) {
@@ -171,15 +167,15 @@ function get_student_attendance_based_on_rollmarking() {
         
         return $days;
     } catch (Exception $ex) {
-
+        throw $ex;
     }
 }
 
 // Collect all the data related to attendance
-function get_data($instanceid) {   
+function get_data($instanceid, $profileuser) {   
     global $COURSE;
 
-    $attendacebyclass = get_attendance_by_class();  
+    $attendacebyclass = get_attendance_by_class($profileuser);  
     
     $classes = [];  
 
@@ -190,13 +186,13 @@ function get_data($instanceid) {
         $c->notattended = $class->notattended;
         $c->totalclasses = $class->totalclasses;
         $c->percentageattended = $class->percentageattended;
-        $c->nooflateclasses = $nooflateclasses;
+        $c->nooflateclasses = $class->nooflateclasses;
         $c->percentagelate = $class->percentagelate;
         $c->lessthan = $class->percentageattended < 90;
         $classes [] = $c;
     }
  
-    $attendacebyterm = get_attendance_by_term();
+    $attendacebyterm = get_attendance_by_term($profileuser);
     $terms = array();
 
     foreach ($attendacebyterm as $term) {
@@ -207,9 +203,61 @@ function get_data($instanceid) {
         $terms [] = $data;
     }
 
-    $urlparams = array('blockid' => $instanceid, 'courseid' => $COURSE->id);
+    $urlparams = array('blockid' => $instanceid, 'courseid' => $COURSE->id, 'id' => $profileuser->id);
     
     $result = ['terms' => $terms, 'classes' => $classes,'attendancebasedonrm' => new moodle_url('/blocks/attendance_report/view.php', $urlparams) ]; 
   
     return $result;
+}
+
+
+// Parent view of own child's activity functionality
+function can_view_on_profile()
+{
+    global $DB, $USER, $PAGE;
+
+    if ($PAGE->url->get_path() ==  '/user/profile.php') {
+        $profileuser = $DB->get_record('user', ['id' => $PAGE->url->get_param('id')]);
+        // Admin is allowed.
+     
+        
+        if (is_siteadmin($USER) && $USER->username != $profileuser->username) {
+            return true;
+        }
+        
+        // Students are allowed to see timetables in their own profiles.
+        if ($profileuser->username == $USER->username && !is_siteadmin($USER)) {
+            return true;
+        }
+
+        // Parents are allowed to view timetables in their mentee profiles.
+        $mentorrole = $DB->get_record('role', array('shortname' => 'parent'));
+
+        if ($mentorrole) {
+
+            $sql = "SELECT ra.*, r.name, r.shortname
+                FROM {role_assignments} ra
+                INNER JOIN {role} r ON ra.roleid = r.id
+                INNER JOIN {user} u ON ra.userid = u.id
+                WHERE ra.userid = ?
+                AND ra.roleid = ?
+                AND ra.contextid IN (SELECT c.id
+                    FROM {context} c
+                    WHERE c.contextlevel = ?
+                    AND c.instanceid = ?)";
+            $params = array(
+                $USER->id, //Where current user
+                $mentorrole->id, // is a mentor
+                CONTEXT_USER,
+                $profileuser->id, // of the prfile user
+            );
+    
+            $mentor = $DB->get_records_sql($sql, $params);
+            if (!empty($mentor)) {
+                return true;
+            }
+        }
+    }
+
+    return false;
 }

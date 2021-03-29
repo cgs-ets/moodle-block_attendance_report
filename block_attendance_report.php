@@ -31,16 +31,38 @@ class block_attendance_report extends block_base {
     }
 
     public function get_content() {
-        global $PAGE, $OUTPUT, $COURSE;
+        global $PAGE, $OUTPUT, $DB;
 
         if ($this->content !== null) {
             return $this->content;
         }
 
+        $config = get_config('block_attendance_report');
+         // Check DB settings are available.
+         if( empty($config->dbtype) ||
+         empty($config->dbhost) ||
+         empty($config->dbuser) ||
+         empty($config->dbpass) ||
+         empty($config->dbname) ||
+         empty($config->dbattbyterm) ||
+         empty($config->dbattbyclass)  ||
+         empty($config->dbattbytermbyid)) {
+         $notification = new \core\output\notification(get_string('nodbsettings', 'block_attendance_report'),
+                                                       \core\output\notification::NOTIFY_ERROR);
+         $notification->set_show_closebutton(false);
+         return $OUTPUT->render($notification);
+     }
+
         $this->content = new stdClass;
-        $data =  get_data($this->instance->id);       
-              
-        $this->content->text =$OUTPUT->render_from_template('block_attendance_report/main', $data);
+    
+        if (can_view_on_profile()) {
+            $profileuser = $DB->get_record('user', ['id' => $PAGE->url->get_param('id')]);
+          //  print_object($profileuser); exit;
+            $data =  get_data($this->instance->id,  $profileuser);                         
+            $this->content->text = $OUTPUT->render_from_template('block_attendance_report/main', $data);
+        } else {
+            $this->content->text = get_string('reportunavailable', 'block_assignmentsquizzes_report');
+        }
 
         return $this->content;
     }

@@ -29,6 +29,7 @@ $string['pluginname_desc'] = 'This plugin depends on DW.';
 $string['attendance_report'] = 'Attendance Report';
 $string['attendance_report:addinstance'] = 'Add a new attendance report block';
 $string['attendance_report:myaddinstance'] = 'Add a new attendance report block to My Moodle page';
+
 $string['dbtype'] = 'Database driver';
 $string['dbtype_desc'] = 'ADOdb database driver name, type of the external database engine.';
 $string['dbhost'] = 'Database host';
@@ -42,6 +43,8 @@ $string['dbattbyclass'] = 'Attendance by Class';
 $string['dbattbyclass_desc'] = 'Stored procedure name to retrieve student attendance by class';
 $string['dbattbytermbyid'] = ' Full class attendance based on roll marking';
 $string['dbattbytermbyid_desc'] = 'Stored procedure name to retrieve student attendance this term by id';
+$string['nodbsettings'] = 'Please configure the DB options for the plugin';
+
 $string['invalidcourse'] = 'Invalid course';
 $string['attendancetitle'] = 'Attendance';
 $string['btnattendanceid'] = 'btnattendance';
@@ -57,3 +60,4 @@ $string['profile'] = 'Profile';
 $string['attbasedonrollmarking'] = 'Attendance based on roll marking';
 $string['attbasedonrmtitle'] = 'Full class attendance this term based on roll marking';
 $string['nosignin'] = 'No sign-in';
+$string['reportunavailable'] = 'Report unavailable';
