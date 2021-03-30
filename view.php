@@ -28,7 +28,7 @@ global $DB, $OUTPUT, $PAGE;
 // Check for all required variables.
 $courseid = required_param('courseid', PARAM_INT);
 $blockid = required_param('blockid', PARAM_INT);
-$id = $PAGE->url->get_param('id');
+$id = required_param('id', PARAM_INT); 
 
 if (!$course = $DB->get_record('course', array('id' => $courseid))) {
     print_error('invalidcourse', 'block_attendance_report', $courseid);
@@ -40,7 +40,6 @@ $PAGE->set_url('/blocks/attendance_report/view.php', array('id' => $courseid));
 $PAGE->set_pagelayout('standard');
 $PAGE->set_title(get_string('pluginname', 'block_attendance_report'));
 $PAGE->set_heading(get_string('attendance_report', 'block_attendance_report'));
-
 
 $nav = $PAGE->navigation->add(get_string('profile', 'block_attendance_report'), $CFG->wwwroot . '/user/view.php?id=' . $id);
 $reporturl = new moodle_url('/blocks/attendance_report/view.php', array('id' => $id, 'courseid' => $courseid, 'blockid' => $blockid));
