@@ -67,11 +67,9 @@ class block_attendance_report extends block_base
             if (attendance_report\can_view_on_profile()) {
                 $profileuser = $DB->get_record('user', ['id' => $PAGE->url->get_param('id')]);
                 $data =  attendance_report\get_data($this->instance->id,  $profileuser);
-
-             //   var_dump($data); exit;
                 $this->content->text = $OUTPUT->render_from_template('block_attendance_report/main', $data);
             } else {
-                $this->content->text = get_string('reportunavailable', 'block_attendance_report');
+                $this->content->text = '';
             }
            
         } catch (\Exception $e) {
