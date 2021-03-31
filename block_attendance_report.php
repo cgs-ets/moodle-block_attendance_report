@@ -35,7 +35,7 @@ class block_attendance_report extends block_base
 
     public function get_content()
     {
-        global $PAGE, $OUTPUT, $DB;
+        global $PAGE, $OUTPUT, $DB, $USER;
 
         if ($this->content !== null) {
             return $this->content;
@@ -62,18 +62,17 @@ class block_attendance_report extends block_base
         }
 
         $this->content = new stdClass;
+        $this->content->text = '';
 
         try {
+
             if (attendance_report\can_view_on_profile()) {
                 $profileuser = $DB->get_record('user', ['id' => $PAGE->url->get_param('id')]);
                 $data =  attendance_report\get_data($this->instance->id,  $profileuser);
+                
                 $this->content->text = $OUTPUT->render_from_template('block_attendance_report/main', $data);
-            } else {
-                $this->content->text = '';
             }
-           
         } catch (\Exception $e) {
-            $this->content->text = get_string('reportunavailable', 'block_attendance_report');
         }
 
 
