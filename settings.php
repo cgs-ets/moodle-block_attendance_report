@@ -57,4 +57,6 @@ if ($ADMIN->fulltree) {
     $settings->add(new admin_setting_configtext('block_attendance_report/dbattbyclass', get_string('dbattbyclass', 'block_attendance_report'), get_string('dbattbyclass_desc', 'block_attendance_report'), ''));
 
     $settings->add(new admin_setting_configtext('block_attendance_report/dbattbytermbyid', get_string('dbattbytermbyid', 'block_attendance_report'), get_string('dbattbytermbyid_desc', 'block_attendance_report'), ''));
+
+    $settings->add(new admin_setting_configtext('block_attendance_report/profileurl', get_string('profileurl', 'block_attendance_report'), get_string('profileurl_desc', 'block_attendance_report'), ''));
 }

@@ -44,6 +44,8 @@ $string['dbattbyclass_desc'] = 'Stored procedure name to retrieve student attend
 $string['dbattbytermbyid'] = ' Full class attendance based on roll marking';
 $string['dbattbytermbyid_desc'] = 'Stored procedure name to retrieve student attendance this term by id';
 $string['nodbsettings'] = 'Please configure the DB options for the plugin';
+$string['profileurl'] = 'Profile URL';
+$string['profileurl_desc'] =' Moodle\'s profile URL';
 
 $string['invalidcourse'] = 'Invalid course';
 $string['attendancetitle'] = 'Attendance';
