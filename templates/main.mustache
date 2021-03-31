@@ -31,7 +31,12 @@ along with Moodle. If not, see
                         <dt>{{#str}} attendancebyterm, block_attendance_report {{/str}}</dt> <br>
                         <dd>
                             <ul class="badges">
-                                {{> block_attendance_report/attendance_by_term}}
+                                {{^notermdata}}
+                                    {{> block_attendance_report/attendance_by_term}}
+                                {{/notermdata}}
+                                {{#noclassesdata}}    
+                                    {{> block_attendance_report/attendance_no_data}}
+                                {{/noclassesdata}}
                             </ul>
                         </dd>
                     </dl>        
@@ -41,19 +46,27 @@ along with Moodle. If not, see
                         <dt>{{#str}} attendancebyclassforterm, block_attendance_report {{/str}}</dt> <br>
                         <dd>
                             <ul class="badges">
-                                {{> block_attendance_report/attendance_by_class}}
+                                {{^noclassesdata}}
+                                    {{> block_attendance_report/attendance_by_class}}
+                                {{/noclassesdata}}
+
+                                {{#noclassesdata}}    
+                                     {{> block_attendance_report/attendance_no_data}}
+                                {{/noclassesdata}}
                             </ul>
                         </dd>
                     </dl>
                 </div>
             </div>
-            <div class="col">                    
-                <a href="{{{attendancebasedonrm}}}">
-                    <div class="badge-actions"></div>
-                    <span class="badge-name">{{#str}} dbattbytermbyid, block_attendance_report {{/str}}</span>
-                </a>
-           
-        </div>
+
+            {{^hidelink}}
+                <div class="col">                    
+                    <a href="{{{attendancebasedonrm}}}">
+                        <div class="badge-actions"></div>
+                        <span class="badge-name">{{#str}} dbattbytermbyid, block_attendance_report {{/str}}</span>
+                    </a>
+                </div>
+            {{/hidelink}}
            
            
 

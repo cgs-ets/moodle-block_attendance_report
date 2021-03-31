@@ -168,6 +168,7 @@ function get_student_attendance_based_on_rollmarking($profileuser) {
                 $days['months']['details']['det'][] = $daydetails;
             }
         });
+        
         return $days;
     } catch (\Exception $ex) {
         throw $ex;
@@ -210,8 +211,11 @@ function get_data($instanceid, $profileuser) {
 
     $urlparams = array('blockid' => $instanceid, 'courseid' => $COURSE->id, 'id' => $profileuser->id);
     
-    $result = ['terms' => $terms, 'classes' => $classes,'attendancebasedonrm' => new \moodle_url('/blocks/attendance_report/view.php', $urlparams) ]; 
-   
+    $notermdata = empty($terms);
+    $noclassesdata = empty($terms);
+    $result = ['terms' => $terms, 'classes' => $classes,'attendancebasedonrm' => new \moodle_url('/blocks/attendance_report/view.php', $urlparams),
+             'notermdata' => $notermdata, 'noclassesdata' => $noclassesdata, 'hidelink' => ($notermdata && $noclassesdata) ]; 
+    
     return $result;
 }
 
