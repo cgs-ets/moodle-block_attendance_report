@@ -22,15 +22,19 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 defined('MOODLE_INTERNAL') || die();
+
 require_once($CFG->dirroot . '/blocks/attendance_report/lib.php');
 
-class block_attendance_report extends block_base {
+class block_attendance_report extends block_base
+{
 
-    public function init() {
+    public function init()
+    {
         $this->title = get_string('attendance_report', 'block_attendance_report');
     }
 
-    public function get_content() {
+    public function get_content()
+    {
         global $PAGE, $OUTPUT, $DB;
 
         if ($this->content !== null) {
@@ -38,52 +42,55 @@ class block_attendance_report extends block_base {
         }
 
         $config = get_config('block_attendance_report');
-         // Check DB settings are available.
-         if( empty($config->dbtype) ||
-         empty($config->dbhost) ||
-         empty($config->dbuser) ||
-         empty($config->dbpass) ||
-         empty($config->dbname) ||
-         empty($config->dbattbyterm) ||
-         empty($config->dbattbyclass)  ||
-         empty($config->dbattbytermbyid)) {
-         $notification = new \core\output\notification(get_string('nodbsettings', 'block_attendance_report'),
-                                                       \core\output\notification::NOTIFY_ERROR);
-         $notification->set_show_closebutton(false);
-         return $OUTPUT->render($notification);
-     }
+        // Check DB settings are available.
+        if (
+            empty($config->dbtype) ||
+            empty($config->dbhost) ||
+            empty($config->dbuser) ||
+            empty($config->dbpass) ||
+            empty($config->dbname) ||
+            empty($config->dbattbyterm) ||
+            empty($config->dbattbyclass)  ||
+            empty($config->dbattbytermbyid)
+        ) {
+            $notification = new \core\output\notification(
+                get_string('nodbsettings', 'block_attendance_report'),
+                \core\output\notification::NOTIFY_ERROR
+            );
+            $notification->set_show_closebutton(false);
+            return $OUTPUT->render($notification);
+        }
 
         $this->content = new stdClass;
-    
-        if (can_view_on_profile()) {
+
+        if (attendance_report\can_view_on_profile()) {
             $profileuser = $DB->get_record('user', ['id' => $PAGE->url->get_param('id')]);
-          //  print_object($profileuser); exit;
-            $data =  get_data($this->instance->id,  $profileuser);                         
+            $data =  attendance_report\get_data($this->instance->id,  $profileuser);
             $this->content->text = $OUTPUT->render_from_template('block_attendance_report/main', $data);
         } else {
-            $this->content->text = get_string('reportunavailable', 'block_assignmentsquizzes_report');
+            $this->content->text = get_string('reportunavailable', 'block_attendance_report');
         }
 
         return $this->content;
     }
 
-    public function instance_allow_multiple() {
+    public function instance_allow_multiple()
+    {
         return false;
     }
 
-    public function instance_allow_config() {
+    public function instance_allow_config()
+    {
         return false;
     }
 
-    public function has_config() {
+    public function has_config()
+    {
         return true;
     }
 
-    public function hide_header() {
+    public function hide_header()
+    {
         return true;
     }
-
-    
-
-
 }

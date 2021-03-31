@@ -26,13 +26,14 @@
  * Returns the context for the template
  * @return string
  */
+namespace attendance_report;
 
  function get_template_context($data, $instanceid) {
     global  $COURSE;
 
     $urlparams = array('blockid' => $instanceid, 'courseid' => $COURSE->id);
 
-    $data = ['attendancebasedonrm' => new moodle_url('/blocks/block_attendance_report/view.php', $urlparams)];
+    $data = ['attendancebasedonrm' => new \moodle_url('/blocks/block_attendance_report/view.php', $urlparams)];
     
     return $data;
 }
@@ -47,7 +48,7 @@ function get_attendance_by_term($profileuser) {
         $config = get_config('block_attendance_report');
 
         // Last parameter (external = true) means we are not connecting to a Moodle database.
-        $externalDB = moodle_database::get_driver_instance($config->dbtype, 'native', true);
+        $externalDB = \moodle_database::get_driver_instance($config->dbtype, 'native', true);
 
         // Connect to external DB
         $externalDB->connect($config->dbhost, $config->dbuser, $config->dbpass, $config->dbname, '');
@@ -57,11 +58,11 @@ function get_attendance_by_term($profileuser) {
         $params = array(
             'id' => $profileuser->username,
         );
-
         $attendancedata = $externalDB->get_records_sql($sql, $params);
+       
         return $attendancedata;
         
-    } catch (Exception $ex) {
+    } catch (\Exception $ex) {
        throw $ex;
     }
 }
@@ -71,9 +72,9 @@ function get_attendance_by_class($profileuser) {
     try {
         $config = get_config('block_attendance_report');
 
-        $externalDB = moodle_database::get_driver_instance($config->dbtype, 'native', true);
+        $externalDB = \moodle_database::get_driver_instance($config->dbtype, 'native', true);
 
-        // Connect to external DB
+        // Connect to external DB.
         $externalDB->connect($config->dbhost, $config->dbuser, $config->dbpass, $config->dbname, '');
 
         $sql = 'EXEC ' . $config->dbattbyclass . ' :id';
@@ -83,19 +84,21 @@ function get_attendance_by_class($profileuser) {
         );
 
         $attendancedata = $externalDB->get_records_sql($sql, $params);
-      
+       
         return $attendancedata;
-    } catch (Exception $ex) {
+
+    } catch (\Exception $ex) {
+
         throw $ex;
     }
 }
 
-// Full Class attendance current Term based on roll marking
+// Full Class attendance current Term based on roll marking.
 function get_student_attendance_based_on_rollmarking($profileuser) {
     try {
-        global $USER;
+       
         $config = get_config('block_attendance_report');
-        $externalDB = moodle_database::get_driver_instance($config->dbtype, 'native', true);       
+        $externalDB = \moodle_database::get_driver_instance($config->dbtype, 'native', true);       
         
         // Connect to external DB
         $externalDB->connect($config->dbhost, $config->dbuser, $config->dbpass, $config->dbname, '');
@@ -107,24 +110,22 @@ function get_student_attendance_based_on_rollmarking($profileuser) {
         );
         $attendancedata = $externalDB->get_recordset_sql($sql, $params);
 
-        $attdata = [];
         $days = [];
         $monthsdata = [];
         $days = [];
-        $monthlabel = [];
-        $monthdates = [];
-        $classcodes = [];
+     
      
         foreach ($attendancedata as $data) {
-            $createDate = new DateTime($data->attendancedate);
+            $createDate = new \DateTime($data->attendancedate);
             $day = $createDate->format("d-m-Y");
             $month = $createDate->format("F");
-            $swipedt = (new DateTime($data->swipedt))->format('h:i A');
+            $swipedt = (new \DateTime($data->swipedt))->format('h:i A');
 
             $monthsdata['months'][$month.'_'.$day][] = ['attendancedate' => $day,
                 'attendanceperiod' => $data->attendanceperiod,
                 'ttclasscode' => $data->ttclasscode,
                 'housesignin' => $swipedt,
+                'nosignin' => $data->swipedt == null,
                 'attendedflag' => $data->attendedflag,
                 'latearrivalflag' => $data->latearrivalflag,
                 'month' => $month,
@@ -135,10 +136,10 @@ function get_student_attendance_based_on_rollmarking($profileuser) {
 
         $attendancedata->close();
 
-        array_walk($monthsdata, function($months) use (&$monthsdata, &$days, $createDate,
-            $monthlabel, $classcodes, $monthdates) {
+        array_walk($monthsdata, function($months) use (&$monthsdata, &$days) {
 
             foreach ($months as $key => $month) {
+             
                 $daydetails = new \stdClass();
                 $classcode = [];
                 $time = "06:00 AM";
@@ -154,9 +155,12 @@ function get_student_attendance_based_on_rollmarking($profileuser) {
                                 $daydetails->late  = strtotime($q) < strtotime($time);
                                 break;
                             case 'classdescription':
-
                                 $classcode['codes'][] = ['code' => $q];
-                                break;                           
+                                break;         
+                            case 'nosignin': 
+                                $daydetails->nosignin = $q;
+                                $daydetails->late  =$q;
+                                break;                  
                         }
                     }
                 }
@@ -164,14 +168,13 @@ function get_student_attendance_based_on_rollmarking($profileuser) {
                 $days['months']['details']['det'][] = $daydetails;
             }
         });
-        
         return $days;
-    } catch (Exception $ex) {
+    } catch (\Exception $ex) {
         throw $ex;
     }
 }
 
-// Collect all the data related to attendance
+// Collect all the data related to attendance.
 function get_data($instanceid, $profileuser) {   
     global $COURSE;
 
@@ -187,8 +190,10 @@ function get_data($instanceid, $profileuser) {
         $c->totalclasses = $class->totalclasses;
         $c->percentageattended = $class->percentageattended;
         $c->nooflateclasses = $class->nooflateclasses;
+        $c->nooflateshow = $class->nooflateclasses > 0;
         $c->percentagelate = $class->percentagelate;
         $c->lessthan = $class->percentageattended < 90;
+        $c->islate = $class->percentagelate != .00;
         $classes [] = $c;
     }
  
@@ -205,18 +210,18 @@ function get_data($instanceid, $profileuser) {
 
     $urlparams = array('blockid' => $instanceid, 'courseid' => $COURSE->id, 'id' => $profileuser->id);
     
-    $result = ['terms' => $terms, 'classes' => $classes,'attendancebasedonrm' => new moodle_url('/blocks/attendance_report/view.php', $urlparams) ]; 
-  
+    $result = ['terms' => $terms, 'classes' => $classes,'attendancebasedonrm' => new \moodle_url('/blocks/attendance_report/view.php', $urlparams) ]; 
+   
     return $result;
 }
 
 
-// Parent view of own child's activity functionality
+// Parent view of own child's activity functionality.
 function can_view_on_profile()
 {
     global $DB, $USER, $PAGE;
-
-    if ($PAGE->url->get_path() ==  '/user/profile.php') {
+     
+    if ($PAGE->url->get_path() ==  '/cgs/moodle/user/profile.php') {
         $profileuser = $DB->get_record('user', ['id' => $PAGE->url->get_param('id')]);
         // Admin is allowed.
      

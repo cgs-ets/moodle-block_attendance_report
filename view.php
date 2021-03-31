@@ -57,7 +57,7 @@ if (is_siteadmin($USER)) {
     $data->studentname = $USER->firstname . ' ' .  $USER->lastname;
 }
 
-$data->days = get_student_attendance_based_on_rollmarking($profileuser);
+$data->days = attendance_report\get_student_attendance_based_on_rollmarking($profileuser);
 
 echo $OUTPUT->render_from_template('block_attendance_report/attendance_based_on_rollmarking', $data);
 echo $OUTPUT->footer();

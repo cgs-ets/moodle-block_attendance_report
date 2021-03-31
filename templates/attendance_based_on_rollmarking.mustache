@@ -51,7 +51,7 @@
         <td>{{attendancedate}}</td>
 
         {{^late}} <td>{{housesignin}}</td> {{/late}}
-        {{#late}}<td class="alert-danger">{{#str}}nosignin, block_attendance_report {{/str}}</td>{{/late}}
+        {{#nosignin}}<td class="alert-danger">{{#str}}nosignin, block_attendance_report {{/str}}</td>{{/nosignin}}
         {{#classcode}}
         {{#codes}}
             <td>{{code}}</td>
