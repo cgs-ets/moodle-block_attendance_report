@@ -70,9 +70,13 @@ class block_attendance_report extends block_base
                 $profileuser = $DB->get_record('user', ['id' => $PAGE->url->get_param('id')]);
                 $data =  attendance_report\get_data($this->instance->id,  $profileuser);
                 
-                $this->content->text = $OUTPUT->render_from_template('block_attendance_report/main', $data);
+                if (!$data['hidelink']) {
+                    $this->content->text = $OUTPUT->render_from_template('block_attendance_report/main', $data);
+                }
+                
             }
         } catch (\Exception $e) {
+
         }
 
 

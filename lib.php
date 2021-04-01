@@ -213,8 +213,12 @@ function get_data($instanceid, $profileuser) {
     
     $notermdata = empty($terms);
     $noclassesdata = empty($terms);
-    $result = ['terms' => $terms, 'classes' => $classes,'attendancebasedonrm' => new \moodle_url('/blocks/attendance_report/view.php', $urlparams),
-             'notermdata' => $notermdata, 'noclassesdata' => $noclassesdata, 'hidelink' => ($notermdata && $noclassesdata) ]; 
+    $result = ['terms' => $terms, 
+               'classes' => $classes,
+               'attendancebasedonrm' => new \moodle_url('/blocks/attendance_report/view.php', $urlparams),
+               'notermdata' => $notermdata, 
+               'noclassesdata' => $noclassesdata, 
+               'hidelink' => ($notermdata && $noclassesdata) ]; 
     
     return $result;
 }
