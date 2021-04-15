@@ -51,6 +51,7 @@ echo $OUTPUT->header();
 $data = new stdClass();
 
 $profileuser = $DB->get_record('user', ['id' => $id]);
+
 if (is_siteadmin($USER)) {
     $data->studentname = $profileuser->firstname . ' ' .  $profileuser->lastname;
 } else {

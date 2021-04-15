@@ -2,3 +2,35 @@
     margin-top: 10px;
     max-width: 25%;
 }
+
+.att-norolltaken {
+    background-color: #FFFFFF;
+}
+
+.att-ild {
+    background-color: #F0E68C;
+}
+
+.att-mark-absent {
+    background-color: #FFB6C1;
+}
+
+.att-mark-present {
+    background-color: #d9f6d9;
+}
+
+.att-health-clinic {
+    background-color: #B0E0E6;
+}
+
+.att-student-hub {
+    background-color: #E9967A;
+}
+.att-excursion {
+    background-color: #A9A9A9;
+}
+
+.att-late {
+    color: red;
+    font-weight: bold;
+}

@@ -21,12 +21,12 @@ along with Moodle. If not, see
 
 }}
 
-<section class="node_category card d-inline-block w-100 mb-3">
+<section>
     <div class="card-body">
         <h3 class="lead">{{#str}} attendancereportitle, block_attendance_report {{/str}}</h3>
         <div class="container-fluid">
             <div class="row align-items-center">
-                <div class="col-lg-4">
+                <div class="col-lg-12">
                     <dl>
                         <dt>{{#str}} attendancebyterm, block_attendance_report {{/str}}</dt> <br>
                         <dd>
@@ -41,9 +41,13 @@ along with Moodle. If not, see
                         </dd>
                     </dl>        
                 </div>
-                <div class="col-lg-8"> 
+            </div>
+            <br>
+            <div class="row align-items-center">
+            
+                <div class="col-lg-12"> 
                     <dl>
-                        <dt>{{#str}} attendancebyclassforterm, block_attendance_report {{/str}}</dt> <br>
+               
                         <dd>
                             <ul class="badges">
                                 {{^noclassesdata}}
@@ -67,8 +71,6 @@ along with Moodle. If not, see
                     </a>
                 </div>
             {{/hidelink}}
-           
-           
 
         </div>
     </div>

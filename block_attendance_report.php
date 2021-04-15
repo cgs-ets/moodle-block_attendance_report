@@ -35,7 +35,7 @@ class block_attendance_report extends block_base
 
     public function get_content()
     {
-        global $PAGE, $OUTPUT, $DB, $USER;
+        global $PAGE, $OUTPUT, $DB;
 
         if ($this->content !== null) {
             return $this->content;
@@ -76,9 +76,8 @@ class block_attendance_report extends block_base
                 
             }
         } catch (\Exception $e) {
-
+           // print_object($e);
         }
-
 
         return $this->content;
     }

@@ -23,11 +23,8 @@ along with Moodle. If not, see
 <table class="table table-striped table-responsive text-center">
    <thead>
       <tr class="attheader">
-         <th>{{#str}} classcode, block_attendance_report {{/str}}</th>
-         <th>{{#str}} attendancebyclassforterm, block_attendance_report {{/str}}</th>
-         <th>{{#str}} notattendancebyclassforterm, block_attendance_report {{/str}}</th>
-         <th>{{#str}} totalclassforterm, block_attendance_report {{/str}}</th>
-         <th>{{#str}} percentageattendedforterm, block_attendance_report {{/str}}</th>
+         <th>{{#str}} classdescription, block_attendance_report {{/str}}</th>
+          <th>{{#str}} percentageattendedforterm, block_attendance_report {{/str}}</th>
          <th>{{#str}} arrivedlate, block_attendance_report {{/str}}</th>
          <th>{{#str}} percentagearrivedlate, block_attendance_report {{/str}}</th>
       </tr>
@@ -35,15 +32,12 @@ along with Moodle. If not, see
    <tbody>
       {{#classes}}
       <tr>
-         <td>{{classcode}}</td>
-         <td>{{attended}}</td>
-         <td>{{notattended}}</td>
-         <td>{{totalclasses}}</td>
-         {{^lessthan}} <td class ="table-success">{{percentageattended}}</td>{{/lessthan}}
-         {{#lessthan}} <td class ="table-danger">{{percentageattended}}</td>{{/lessthan}}
+         <td>{{classdescription}}</td>
+         {{^lessthan}} <td class ="table-success"> {{attended}}/{{totalclasses}}  ( {{percentageattended}}%)</td>{{/lessthan}}
+         {{#lessthan}} <td class ="table-danger"> {{attended}}/{{totalclasses}}  ({{percentageattended}}%)</td>{{/lessthan}}
          {{^nooflateshow}} <td></td> {{/nooflateshow}}
          {{#nooflateshow}}<td>{{nooflateclasses}}</td>{{/nooflateshow}}
-         <td>{{#islate}}{{percentagelate}}{{/islate}}</td>
+         <td>{{#islate}}{{percentagelate}}%{{/islate}}</td>
          
       </tr>
       {{/classes}}

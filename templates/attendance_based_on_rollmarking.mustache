@@ -19,9 +19,19 @@
     @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
 }}
 
+
 <div class="table-responsive text-center">
   <h3><bold>{{studentname}}</bold></h3>
-  <h5> {{#str}} attbasedonrmtitle, block_attendance_report{{/str}}</h5>
+  <h5>{{#str}} attbasedonrmtitle, block_attendance_report{{/str}}</h5>
+
+  <table>
+    <tr>
+      <td class="att-norolltaken">{{#str}} norolltaken, block_attendance_report{{/str}}</td>
+      <td class="att-mark-absent">{{#str}} markedabset, block_attendance_report{{/str}}</td>
+      <td class="att-mark-present">{{#str}} markedpresent, block_attendance_report{{/str}}</td>
+    </tr>
+  </table>
+  <br>
   <table class="table table-striped" >
   <thead>
     <tr>      
@@ -31,32 +41,41 @@
     </tr>
   </thead>
   <tbody>
-    <tr>      
-     
+    <tr>
         <td></td>
         <td></td>
         <td>1</td>
         <td>2</td>
         <td>3</td>
         <td>4</td>
-        <td>5</td>
-        <td>6</td>  
+        <td>{{#str}}pastoral, block_attendance_report {{/str}}</td>
+        <td>5</td>  
     </tr>
         {{#days}}
         {{#months}}
         {{#details}}
         {{#det}}
     <tr> 
-     
         <td>{{attendancedate}}</td>
+        {{^late}}<td class="att-mark-present">{{housesignin}}</td>{{/late}}
+        {{#nosignin}}<td class="att-mark-absent">{{#str}}nosignin, block_attendance_report {{/str}}</td>{{/nosignin}}
+        {{#classdescription}}
+          {{#descriptions}}
+            {{#attendedflag}}{{^latearrivalflag}}  <td class="att-mark-present" > {{description}} </td> {{/latearrivalflag}}{{/attendedflag}}
+            
+            {{#attendedflag}} 
+              {{#latearrivalflag}} 
+            
+                   <td  class="att-mark-present att-late" data-html="true" data-toggle="tooltip" data-placement="bottom" title ="  Arrived late: {{{latearrivaltime}}}">
+                   {{description}} *
+                  </td>
+              {{/latearrivalflag}}
+            {{/attendedflag}}
 
-        {{^late}} <td>{{housesignin}}</td> {{/late}}
-        {{#nosignin}}<td class="alert-danger">{{#str}}nosignin, block_attendance_report {{/str}}</td>{{/nosignin}}
-        {{#classcode}}
-        {{#codes}}
-            <td>{{code}}</td>
-        {{/codes}}    
-        {{/classcode}}          
+            {{^attendedflag}} {{^norolltaken}} <td class="att-mark-absent" >{{description}}</td> {{/norolltaken}} {{/attendedflag}}
+            {{^attendedflag}}{{#norolltaken}} <td class="att-norolltaken" >{{description}}</td> {{/norolltaken}}{{/attendedflag}}
+          {{/descriptions}}    
+        {{/classdescription}}          
     </tr>
         {{/det}}
         {{/details}}
