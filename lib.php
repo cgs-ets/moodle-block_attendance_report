@@ -120,7 +120,7 @@ function get_student_attendance_based_on_rollmarking($profileuser)
         foreach ($attendancedata as $data) {
          
             $createDate = new \DateTime($data->attendancedate);
-            $day = $createDate->format("d-m-Y");
+            $day = $createDate->format("d/m/Y");
             $month = $createDate->format("F");
             $swipedt = (new \DateTime($data->swipedt))->format('h:i A');
 
