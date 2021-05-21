@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -16,13 +15,20 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- *
- * @package   block_attendance_report
  * @copyright 2021 Veronica Bermegui
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ *
  */
+
+namespace block_attendance_report\external;
+
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->component = 'block_attendance_report';
-$plugin->version = 2021052000;
-$plugin->requires = 2010112400;
+require_once($CFG->libdir . '/externallib.php');
+
+use external_api;
+
+class api extends external_api
+{
+    use get_attendance_rollmarking_context;
+}

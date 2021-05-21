@@ -96,10 +96,10 @@ function get_attendance_by_class($profileuser)
 }
 
 // Full Class attendance current Term based on roll marking.
-function get_student_attendance_based_on_rollmarking($profileuser)
+function get_student_attendance_based_on_rollmarking($username)
 {
     try {
-
+       
         $config = get_config('block_attendance_report');
         $externalDB = \moodle_database::get_driver_instance($config->dbtype, 'native', true);
 
@@ -109,7 +109,7 @@ function get_student_attendance_based_on_rollmarking($profileuser)
         $sql = 'EXEC ' . $config->dbattbytermbyid . ' :id';
 
         $params = array(
-            'id' => $profileuser->username,
+            'id' => $username,
         );
         $attendancedata = $externalDB->get_recordset_sql($sql, $params);
 

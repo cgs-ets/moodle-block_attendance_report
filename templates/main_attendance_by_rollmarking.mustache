@@ -1,0 +1,40 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+    @package   block_attendance_report
+    @copyright 2020 Veronica Bermegui
+    @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+}}
+
+
+<div id="rollmarking-container" class="text-center" data-username="{{username}}">
+  <h3><bold>{{studentname}}</bold></h3>
+  <h5>{{#str}} attbasedonrmtitle, block_attendance_report{{/str}}</h5>
+  <br>
+  <div data-region="rm-table-container">
+    <div class='spinner-border  text-primary' style="width: 3rem; height: 3rem;"  role = "status" id="rollmarkin-table">
+        <span class="sr-only">Loading...</span>
+    </div>
+    <p  class="text-center" >Loading...</p>
+  </div>
+  
+</div>
+
+{{#js}}
+require(['block_attendance_report/control'], function(Mod) {
+Mod.init();
+});
+{{/js}}

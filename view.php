@@ -54,11 +54,13 @@ $profileuser = $DB->get_record('user', ['id' => $id]);
 
 if (is_siteadmin($USER)) {
     $data->studentname = $profileuser->firstname . ' ' .  $profileuser->lastname;
+    $data->username = $profileuser->username;
 } else {
     $data->studentname = $USER->firstname . ' ' .  $USER->lastname;
+    $data->username = $USER->username;
 }
 
-$data->days = attendance_report\get_student_attendance_based_on_rollmarking($profileuser);
+//$data->days = attendance_report\get_student_attendance_based_on_rollmarking($profileuser);
 
-echo $OUTPUT->render_from_template('block_attendance_report/attendance_based_on_rollmarking', $data);
+echo $OUTPUT->render_from_template('block_attendance_report/main_attendance_by_rollmarking', $data);
 echo $OUTPUT->footer();
