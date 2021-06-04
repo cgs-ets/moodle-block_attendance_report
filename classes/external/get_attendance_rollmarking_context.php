@@ -49,7 +49,8 @@ trait get_attendance_rollmarking_context
     {
         return new external_function_parameters(
             array(
-                'username' => new external_value(PARAM_RAW, 'student username')
+                'username' => new external_value(PARAM_RAW, 'Student username'),
+                'campus' => new external_value(PARAM_RAW, 'Primary or Senior'),
             )
         );
     }
@@ -57,7 +58,7 @@ trait get_attendance_rollmarking_context
     /**
      * Return context.
      */
-    public static function get_attendance_rollmarking_context($username)
+    public static function get_attendance_rollmarking_context($username, $campus)
     {
         global $USER, $PAGE;
         
@@ -65,12 +66,13 @@ trait get_attendance_rollmarking_context
        
         self::validate_context($context);
         //Parameters validation
-        self::validate_parameters(self::get_attendance_rollmarking_context_parameters(), array('username' => $username));
+        self::validate_parameters(self::get_attendance_rollmarking_context_parameters(), array('username' => $username, 'campus' => $campus));
         
         // Get the context for the template.
         $ctx = new \stdClass();
-        $ctx->days = \attendance_report\get_student_attendance_based_on_rollmarking($username);
-
+        $ctx->senior = ($campus == 'Senior');
+        $ctx->days = \attendance_report\get_student_attendance_based_on_rollmarking($username, $campus);
+      
         if (empty($ctx)) {
             $html =  get_string('nodataavailable', 'block_assignmentsquizzes_report');
         } else {

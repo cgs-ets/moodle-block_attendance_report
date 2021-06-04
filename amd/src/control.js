@@ -28,8 +28,8 @@ define(['jquery', 'core/ajax', 'core/log'], function ($, Ajax, Log) {
         Log.debug("block_attendance_report_report: initialising controls");
         const element = document.getElementById('rollmarking-container');
         const username = element.getAttribute('data-username');
-
-        var control = new Controls(username);
+        const campus = element.getAttribute('data-campus');
+        var control = new Controls(username, campus);
         control.main();
     }
 
@@ -38,9 +38,10 @@ define(['jquery', 'core/ajax', 'core/log'], function ($, Ajax, Log) {
     *
     * @constructor
     */
-    function Controls(username) {
+    function Controls(username, campus) {
         let self = this;
         self.username = username;
+        self.campus = campus;
     }
 
     /**
@@ -56,10 +57,13 @@ define(['jquery', 'core/ajax', 'core/log'], function ($, Ajax, Log) {
     Controls.prototype.getAttendanceRollmarking = function () {
         let self = this;
         const username = self.username;
+        const campus = self.campus;
+
         Ajax.call([{
             methodname: 'block_attendance_report_get_attendance_rollmarking_context',
             args: {
-                username: username
+                username: username,
+                campus: campus
             },
 
             done: function (response) {

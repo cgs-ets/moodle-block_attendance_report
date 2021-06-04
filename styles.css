@@ -1,46 +1,47 @@
 .attbyterm {
-  margin-top: 10px;
-  max-width: 25%;
+    margin-top: 10px;
+    max-width: 25%;
 }
 
 .att-norolltaken {
-  background-color: #ffffff;
+    background-color: #ffffff;
 }
 
 section.block.block_attendance_report.card.mb-3 {
-  width: 50%;  
+    width: 50%;
 }
 
 .att-ild {
-  background-color: #f0e68c;
+    background-color: #f0e68c;
 }
 
 .att-mark-absent {
-  background-color: #ffb6c1;
+    background-color: #ffb6c1;
 }
 
 .att-mark-present {
-  background-color: #d9f6d9;
+    background-color: #d9f6d9;
 }
 
 .att-health-clinic {
-  background-color: #b0e0e6;
+    background-color: #b0e0e6;
 }
 
 .att-student-hub {
-  background-color: #e9967a;
+    background-color: #e9967a;
 }
+
 .att-excursion {
-  background-color: #a9a9a9;
+    background-color: #a9a9a9;
 }
 
 .att-late {
-  color: red;
-  font-weight: bold;
+    color: red;
+    font-weight: bold;
 }
 
 @media only screen and (max-width: 1024px) {
-  section.block.block_attendance_report.card.mb-3 {
-    width: 100%;
-  }
+    section.block.block_attendance_report.card.mb-3 {
+        width: 100%;
+   }
 }

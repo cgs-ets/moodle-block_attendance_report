@@ -96,7 +96,7 @@ function get_attendance_by_class($profileuser)
 }
 
 // Full Class attendance current Term based on roll marking.
-function get_student_attendance_based_on_rollmarking($username)
+function get_student_attendance_based_on_rollmarking($username, $campus)
 {
     try {
        
@@ -106,24 +106,24 @@ function get_student_attendance_based_on_rollmarking($username)
         // Connect to external DB.
         $externalDB->connect($config->dbhost, $config->dbuser, $config->dbpass, $config->dbname, '');
 
-        $sql = 'EXEC ' . $config->dbattbytermbyid . ' :id';
+        $sql = 'EXEC ' . $config->dbattbytermbyid . ' :id, :campus';
+        $c = ($campus == 'Senior') ? 'SEN' : 'PRH';
 
         $params = array(
             'id' => $username,
+            'campus' => $c
         );
         $attendancedata = $externalDB->get_recordset_sql($sql, $params);
-
-        $days = [];
+        
         $monthsdata = [];
-        $days = [];
-
+    
         foreach ($attendancedata as $data) {
-         
+           
             $createDate = new \DateTime($data->attendancedate);
             $day = $createDate->format("d/m/Y");
             $month = $createDate->format("F");
             $swipedt = (new \DateTime($data->swipedt))->format('h:i A');
-
+    
             $monthsdata['months'][$month . '_' . $day][$data->attendanceperiod] = [
                 'attendancedate' => $day,
                 'attendanceperiod' => $data->attendanceperiod,
@@ -134,58 +134,71 @@ function get_student_attendance_based_on_rollmarking($username)
                 'latearrivalflag' => $data->latearrivalflag,
                 'latearrivaltime' => $data->latearrivaltime,
                 'month' => $month,
-                'classdescription' => $data->classdescription
+                'classdescription' => $data->classdescription,
+                'perioddescriont' => $data->description, // Periods can have different names. 
             ];
         }
 
-
-        get_student_attendance_based_on_rollmarking_helper($monthsdata);
-        array_walk($monthsdata, function ($months) use (&$monthsdata, &$days) {
-
-            foreach ($months as $key => $month) {
-                $daydetails = new \stdClass();
-                $classdesc = [];
-                $time = "06:00 AM";
-
-                list($daydetails->month, $daydetails->attendancedate) = explode('_', $key);
-
-                foreach ($month as $i => $m) {
-                    $summary = new \stdClass();
-                    $summary->description = $m['classdescription'];
-                    $summary->attendedflag =  $m['attendedflag'];
-                    $summary->norolltaken = (is_null($m['attendedflag']) && is_null($m['latearrivalflag']));
-                    $summary->latearrivalflag = !is_null($m['latearrivalflag']) && $m['latearrivalflag'] != 0;
-                    $summary->latearrivaltime = $m['latearrivaltime'];
-                    $classdesc['descriptions'][] = $summary;
-
-                    foreach ($m as $j => $q) {
-
-                        switch ($j) {
-                            case 'housesignin':
-                                $daydetails->housesignin = $q;
-                                $daydetails->late  = strtotime($q) < strtotime($time);
-                                break;
-                            case 'nosignin':
-                                $daydetails->nosignin = $q;
-                                $daydetails->late  = $q;
-                                break;
-                        }
-                    }
-                }
-
-                $daydetails->classdescription = $classdesc;
-                $days['months']['details']['det'][] = $daydetails;
-            }
-        });
-
+        if ($campus == 'Senior') {
+            $days = get_student_attendance_based_on_rollmarking_senior($monthsdata);
+        } else {
+            $days = get_student_attendance_based_on_rollmarking_primary($monthsdata);
+        }
+       
         return $days;
     } catch (\Exception $ex) {
+     
         throw $ex;
     }
 }
 
+function get_student_attendance_based_on_rollmarking_senior($monthsdata) {
+    $days = [];
+
+    get_student_attendance_based_on_rollmarking_senior_helper($monthsdata);
+    array_walk($monthsdata, function ($months) use (&$days) {
+
+        foreach ($months as $key => $month) {
+            $daydetails = new \stdClass();
+            $classdesc = [];
+            $time = "06:00 AM";
+
+            list($daydetails->month, $daydetails->attendancedate) = explode('_', $key);
+
+            foreach ($month as $i => $m) {
+                $summary = new \stdClass();
+                $summary->description = $m['classdescription'];
+                $summary->attendedflag =  $m['attendedflag'];
+                $summary->norolltaken = (is_null($m['attendedflag']) && is_null($m['latearrivalflag']));
+                $summary->latearrivalflag = !is_null($m['latearrivalflag']) && $m['latearrivalflag'] != 0;
+                $summary->latearrivaltime = $m['latearrivaltime'];
+                $classdesc['descriptions'][] = $summary;
+
+                foreach ($m as $j => $q) {
+
+                    switch ($j) {
+                        case 'housesignin':
+                            $daydetails->housesignin = $q;
+                            $daydetails->late  = strtotime($q) < strtotime($time);
+                            break;
+                        case 'nosignin':
+                            $daydetails->nosignin = $q;
+                            $daydetails->late  = $q;
+                            break;
+                    }
+                }
+            }
+
+            $daydetails->classdescription = $classdesc;
+            $days['months']['details']['det'][] = $daydetails;
+        }
+    });
+
+    return $days;
+}
+
 // If there are periods where there  is no data, add dummy values.
-function get_student_attendance_based_on_rollmarking_helper(&$daysdata)
+function get_student_attendance_based_on_rollmarking_senior_helper(&$daysdata)
 {
     $p = [];
 
@@ -225,6 +238,89 @@ function get_student_attendance_based_on_rollmarking_helper(&$daysdata)
     return $daysdata;
 }
 
+function get_student_attendance_based_on_rollmarking_primary($monthsdata) {
+    $days = [];
+
+    get_student_attendance_based_on_rollmarking_primary_helper($monthsdata); 
+    array_walk($monthsdata, function ($months) use (&$days) {
+
+        foreach ($months as $key => $month) {
+            $daydetails = new \stdClass();
+            $classdesc = [];
+            $time = "06:00 AM";
+
+            list($daydetails->month, $daydetails->attendancedate) = explode('_', $key);
+
+            foreach ($month as $i => $m) {
+                $summary = new \stdClass();
+                $summary->description = $m['classdescription'];
+                $summary->attendedflag =  $m['attendedflag'];
+                $summary->norolltaken = (is_null($m['attendedflag']) && is_null($m['latearrivalflag']));
+                $summary->latearrivalflag = !is_null($m['latearrivalflag']) && $m['latearrivalflag'] != 0;
+                $summary->latearrivaltime = $m['latearrivaltime'];
+                $classdesc['descriptions'][] = $summary;
+
+                foreach ($m as $j => $q) {
+
+                    switch ($j) {
+                        case 'housesignin':
+                            $daydetails->housesignin = $q;
+                            $daydetails->late  = strtotime($q) < strtotime($time);
+                            break;
+                        case 'nosignin':
+                            $daydetails->nosignin = $q;
+                            $daydetails->late  = $q;
+                            break;
+                    }
+                }
+            }
+
+            $daydetails->classdescription = $classdesc;
+            $days['months']['details']['det'][] = $daydetails;
+        }
+    });
+
+    return $days;
+}
+
+function get_student_attendance_based_on_rollmarking_primary_helper(&$daysdata){
+    $p = [];
+
+    foreach ($daysdata['months'] as $date => $periods) {
+        $p[$date] = array_keys($periods);
+    }
+
+    $pvalue = [2,3,4,5,6,7,8,9]; 
+    $pmissing = [];
+
+    foreach ($p as $day => $period) {
+        $pmissing[$day] = array_diff($pvalue, $period);
+    }
+
+    foreach ($pmissing as $date => $periodmissing) {
+
+        foreach ($periodmissing as $j => $missing) {
+            $d = explode('_', $date);
+            $dateindex = end($d);
+            $month = reset($d);
+            $daysdata['months'][$date][$missing] = [
+                'attendancedate' => $dateindex,
+                'attendanceperiod' => $missing,
+                'ttclasscode' => '',
+                'housesignin' => '',
+                'nosignin' =>  null,
+                'attendedflag' => null,
+                'latearrivalflag' => null,
+                'month' => $month,
+                'classdescription' => ''
+            ];
+
+            ksort($daysdata['months'][$date]);
+        }
+    }
+
+    return $daysdata;
+}
 // Collect all the data related to attendance.
 function get_data($instanceid, $profileuser)
 {
@@ -270,7 +366,7 @@ function get_data($instanceid, $profileuser)
         'attendancebasedonrm' => new \moodle_url('/blocks/attendance_report/view.php', $urlparams),
         'notermdata' => $notermdata,
         'noclassesdata' => $noclassesdata,
-        'hidelink' => ($notermdata && $noclassesdata)
+        'hidelink' => ($notermdata && $noclassesdata),
     ];
 
     return $result;

@@ -20,63 +20,11 @@ along with Moodle. If not, see
 @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
 
 }}
-<table>
-    <tr>
-      <td class="att-norolltaken">{{#str}} norolltaken, block_attendance_report{{/str}}</td>
-      <td class="att-mark-absent">{{#str}} markedabset, block_attendance_report{{/str}}</td>
-      <td class="att-mark-present">{{#str}} markedpresent, block_attendance_report{{/str}}</td>
-    </tr>
-  </table>
-  <br>
-  <table class="table table-striped" >
-  <thead>
-    <tr>      
-      <th scope="col">Attendance Date</th>
-      <th scope="col">House sign in</th>
-      <th colspan ="6" >Periods</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-        <td></td>
-        <td></td>
-        <td>1</td>
-        <td>2</td>
-        <td>3</td>
-        <td>4</td>
-        <td>{{#str}}pastoral, block_attendance_report {{/str}}</td>
-        <td>5</td>  
-    </tr>
-        {{#days}}
-        {{#months}}
-        {{#details}}
-        {{#det}}
-    <tr> 
-        <td>{{attendancedate}}</td>
-        {{^late}}<td class="att-mark-present">{{housesignin}}</td>{{/late}}
-        {{#nosignin}}<td class="att-mark-absent">{{#str}}nosignin, block_attendance_report {{/str}}</td>{{/nosignin}}
-        {{#classdescription}}
-          {{#descriptions}}
-            {{#attendedflag}}{{^latearrivalflag}}  <td class="att-mark-present" > {{description}} </td> {{/latearrivalflag}}{{/attendedflag}}
-            
-            {{#attendedflag}} 
-              {{#latearrivalflag}} 
-            
-                   <td  class="att-mark-present att-late" data-html="true" data-toggle="tooltip" data-placement="bottom" title ="  Arrived late: {{{latearrivaltime}}}">
-                   {{description}} *
-                  </td>
-              {{/latearrivalflag}}
-            {{/attendedflag}}
 
-            {{^attendedflag}} {{^norolltaken}} <td class="att-mark-absent" >{{description}}</td> {{/norolltaken}} {{/attendedflag}}
-            {{^attendedflag}}{{#norolltaken}} <td class="att-norolltaken" >{{description}}</td> {{/norolltaken}}{{/attendedflag}}
-          {{/descriptions}}    
-        {{/classdescription}}          
-    </tr>
-        {{/det}}
-        {{/details}}
-        {{/months}} 
-        {{/days}}
-   
-  </tbody>
-</table>
+{{#senior}}
+{{> block_attendance_report/attendance_rollmarking_senior}}
+{{/senior}}
+
+{{^senior}}
+    {{> block_attendance_report/attendance_rollmarking_primary}}
+{{/senior}}

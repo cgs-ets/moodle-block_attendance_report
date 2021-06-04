@@ -20,7 +20,7 @@
 }}
 
 
-<div id="rollmarking-container" class="text-center" data-username="{{username}}">
+<div id="rollmarking-container" class="text-center" data-username="{{username}}"  data-campus ='{{campus}}'>
   <h3><bold>{{studentname}}</bold></h3>
   <h5>{{#str}} attbasedonrmtitle, block_attendance_report{{/str}}</h5>
   <br>
@@ -30,11 +30,10 @@
     </div>
     <p  class="text-center" >Loading...</p>
   </div>
-  
 </div>
 
 {{#js}}
 require(['block_attendance_report/control'], function(Mod) {
-Mod.init();
+  Mod.init();
 });
 {{/js}}

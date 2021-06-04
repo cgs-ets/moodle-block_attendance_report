@@ -45,22 +45,35 @@ $nav = $PAGE->navigation->add(get_string('profile', 'block_attendance_report'), 
 $reporturl = new moodle_url('/blocks/attendance_report/view.php', array('id' => $id, 'courseid' => $courseid, 'blockid' => $blockid));
 $reportnode = $nav->add(get_string('attbasedonrollmarking', 'block_attendance_report'), $reporturl);
 $reportnode->make_active();
+$profileuser = $DB->get_record('user', ['id' => $id]);
+$dontoprocess = false;
+// CampusRoles profile field is required by this plugin.
+profile_load_custom_fields($profileuser);
+
+if(!isset($profileuser->profile['CampusRoles']) || empty($profileuser->profile['CampusRoles'])) {
+    $message = get_string('userprofilenotsetup', 'block_attendance_report');
+    \core\notification::error($message);
+   $dontoprocess = true;
+}
 
 echo $OUTPUT->header();
 
 $data = new stdClass();
 
-$profileuser = $DB->get_record('user', ['id' => $id]);
+if (!$dontoprocess) {
+    
+    if (is_siteadmin($USER)) {
+        $data->studentname = $profileuser->firstname . ' ' .  $profileuser->lastname;
+        $data->username = $profileuser->username;
+    } else {
+        $data->studentname = $USER->firstname . ' ' .  $USER->lastname;
+        $data->username = $USER->username;
+    }
 
-if (is_siteadmin($USER)) {
-    $data->studentname = $profileuser->firstname . ' ' .  $profileuser->lastname;
-    $data->username = $profileuser->username;
-} else {
-    $data->studentname = $USER->firstname . ' ' .  $USER->lastname;
-    $data->username = $USER->username;
+    $isSenior = strpos(strtolower($profileuser->profile['CampusRoles']),'senior');
+    $data->campus = is_bool($isSenior) ? 'Primary' : 'Senior';
+    
+    echo $OUTPUT->render_from_template('block_attendance_report/main_attendance_by_rollmarking', $data);
+    
 }
-
-//$data->days = attendance_report\get_student_attendance_based_on_rollmarking($profileuser);
-
-echo $OUTPUT->render_from_template('block_attendance_report/main_attendance_by_rollmarking', $data);
 echo $OUTPUT->footer();
