@@ -21,7 +21,6 @@ along with Moodle. If not, see
 
 }}
 
-
 <table>
   <tr>
     <td class="att-mark-absent">{{#str}} markedabset, block_attendance_report{{/str}}</td>
@@ -38,18 +37,18 @@ along with Moodle. If not, see
 <table id="rollmarking-primary" class="table">
   <thead>
     <tr>
-      <th scope="col">Attendance Date</th>
+      <th scope="col">Attendance Date</th>    
       <th colspan ="9" >Sessions</th>
     </tr>
   </thead>
   <tbody>
-    <tr class="rollmarking-primary-header">
+    <tr>
       <td></td>
       <td colspan="2"> 1-2</td>
       <td colspan="2"> 3-4</td>
       <td colspan="2"> 5-6</td>
-      <td colspan="2"> 7-8</td>
     </tr>
+    
       {{#days}}
       {{#months}}
       {{#details}}
@@ -58,10 +57,9 @@ along with Moodle. If not, see
       <td>{{attendancedate}}</td>
       {{#classdescription}}
       {{#descriptions}}
-        {{#attendedflag}} <td class="att-mark-present" > {{description}} </td> {{/attendedflag}}
-        {{^rolltaken}}<td class="att-norolltaken">{{description}}</td> {{/rolltaken}}
-        {{#rolltaken}}{{^attendedflag}}<td class="att-mark-absent">{{description}}</td>{{/attendedflag}} {{/rolltaken}}
-
+      {{#attendedflag}} <td class="att-mark-present" ></td> {{/attendedflag}}
+      {{^rolltaken}}<td class="att-norolltaken"></td> {{/rolltaken}}
+      {{#rolltaken}}{{^attendedflag}}<td class="att-mark-absent"></td>{{/attendedflag}} {{/rolltaken}}
       {{/descriptions}}    
     {{/classdescription}}   
     </tr>
