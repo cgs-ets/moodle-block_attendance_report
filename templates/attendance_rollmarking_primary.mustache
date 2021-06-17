@@ -22,24 +22,33 @@ along with Moodle. If not, see
 }}
 
 
-<table class="table table-striped">
+<table>
+  <tr>
+    <td class="att-mark-absent">{{#str}} markedabset, block_attendance_report{{/str}}</td>
+    <td class="att-mark-present">{{#str}} markedpresent, block_attendance_report{{/str}}</td>
+    <td class="att-norolltaken">{{#str}} norolltaken, block_attendance_report{{/str}}</td>
+  </tr>  
+</table>
+<br>
+<div class="clarification">
+  <i>{{#str}} clarification, block_attendance_report{{/str}}</i>
+</div>
+<br>
+
+<table id="rollmarking-primary" class="table">
   <thead>
     <tr>
       <th scope="col">Attendance Date</th>
-      <th colspan ="9" >Periods</th>
+      <th colspan ="9" >Sessions</th>
     </tr>
   </thead>
   <tbody>
-    <tr>
+    <tr class="rollmarking-primary-header">
       <td></td>
-      <td>Home AM</td>
-      <td>Session 1</td>
-      <td>Session 2</td>
-      <td>Session 3</td>
-      <td>Session 4</td>
-      <td>Session 5</td>
-      <td>Session 6</td>
-      <td>Home PM</td>
+      <td colspan="2"> 1-2</td>
+      <td colspan="2"> 3-4</td>
+      <td colspan="2"> 5-6</td>
+      <td colspan="2"> 7-8</td>
     </tr>
       {{#days}}
       {{#months}}
@@ -49,19 +58,10 @@ along with Moodle. If not, see
       <td>{{attendancedate}}</td>
       {{#classdescription}}
       {{#descriptions}}
-        {{#attendedflag}}{{^latearrivalflag}}  <td class="att-mark-present" > {{description}} </td> {{/latearrivalflag}}{{/attendedflag}}
-        
-        {{#attendedflag}} 
-          {{#latearrivalflag}} 
-        
-               <td  class="att-mark-present att-late" data-html="true" data-toggle="tooltip" data-placement="bottom" title ="  Arrived late: {{{latearrivaltime}}}">
-               {{description}} *
-              </td>
-          {{/latearrivalflag}}
-        {{/attendedflag}}
+        {{#attendedflag}} <td class="att-mark-present" > {{description}} </td> {{/attendedflag}}
+        {{^rolltaken}}<td class="att-norolltaken">{{description}}</td> {{/rolltaken}}
+        {{#rolltaken}}{{^attendedflag}}<td class="att-mark-absent">{{description}}</td>{{/attendedflag}} {{/rolltaken}}
 
-        {{^attendedflag}} {{^norolltaken}} <td class="att-mark-absent" >{{description}}</td> {{/norolltaken}} {{/attendedflag}}
-        {{^attendedflag}}{{#norolltaken}} <td class="att-norolltaken" >{{description}}</td> {{/norolltaken}}{{/attendedflag}}
       {{/descriptions}}    
     {{/classdescription}}   
     </tr>

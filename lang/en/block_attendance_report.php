@@ -41,8 +41,11 @@ $string['dbattbyterm'] = 'Attendance by Term';
 $string['dbattbyterm_desc'] = 'Stored procedure name to retrieve student attendance by term';
 $string['dbattbyclass'] = 'Attendance by Class';
 $string['dbattbyclass_desc'] = 'Stored procedure name to retrieve student attendance by class';
-$string['dbattbytermbyid'] = ' Full class attendance based on roll marking';
-$string['dbattbytermbyid_desc'] = 'Stored procedure name to retrieve student attendance this term by id';
+$string['dbattbytermbyid'] = ' Full class attendance based on roll marking. Senior students';
+$string['dbattbytermbyid_desc'] = 'Stored procedure name to retrieve senior student attendance this term by id';
+$string['dbattbytermbyidprimary'] = ' Full class attendance based on roll marking. Primary students';
+$string['dbattbytermbyidprimary_desc'] = 'Stored procedure name to retrieve primary student attendance this term by id';
+
 $string['nodbsettings'] = 'Please configure the DB options for the plugin';
 $string['profileurl'] = 'Profile URL';
 $string['profileurl_desc'] =' Moodle\'s profile URL';
@@ -66,7 +69,7 @@ $string['attbasedonrollmarking'] = 'Attendance based on roll marking';
 $string['attbasedonrmtitle'] = 'Full class attendance this term based on roll marking';
 $string['nosignin'] = 'No sign-in';
 $string['reportunavailable'] = 'Attendance report unavailable';
-
+$string['clarification'] = 'NB this data is dependent on accurate roll marking.';
 $string['norolltaken'] = 'No roll taken';
 $string['markedabset'] = 'Marked absent';
 $string['markedpresent'] = 'Marked present';

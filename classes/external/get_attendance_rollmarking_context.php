@@ -74,7 +74,7 @@ trait get_attendance_rollmarking_context
         $ctx->days = \attendance_report\get_student_attendance_based_on_rollmarking($username, $campus);
       
         if (empty($ctx)) {
-            $html =  get_string('nodataavailable', 'block_assignmentsquizzes_report');
+            $html =  get_string('nodataavailable', 'block_attendance_report');
         } else {
             $output = $PAGE->get_renderer('core');
             $html =  $output->render_from_template('block_attendance_report/attendance_by_rollmarking', $ctx);
