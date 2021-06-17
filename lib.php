@@ -252,6 +252,8 @@ function get_student_attendance_based_on_rollmarking_primary($monthsdata, $atten
         foreach ($months as $key => $month) {
             $daydetails = new \stdClass();
             $classdesc = [];
+            $classrollnottaken = []; // Collect the classes where the roll is not taken.
+            $periodsrollmark = [8,9]; // refers to the columns to fill
             $attendanceperiods = [];
             list($daydetails->month, $daydetails->attendancedate) = explode('_', $key);
 
@@ -262,11 +264,49 @@ function get_student_attendance_based_on_rollmarking_primary($monthsdata, $atten
                 $summary->period = $m['attendanceperiod'];
                 $summary->attendedflag =  $m['attendedflag'];
                 $summary->rolltaken = !is_null( $m['attendedflag']) &&  !is_null($m['latearrivalflag'] != 0);
-                $classdesc['descriptions'][] = $summary;
-               
+                $summary->latearrivalflag = !is_null($m['latearrivalflag']) && $m['latearrivalflag'] != 0;
+                $summary->latearrivaltime = $m['latearrivaltime'];
+                $classdesc['descriptions'][$i] = $summary;
+                if (!is_null( $m['attendedflag']) &&  !is_null($m['latearrivalflag'] != 0)) { // Roll taken
+                    $classdesc['descriptions'][$i] = $summary;
+                } else { // Roll not taken
+                    $classrollnottaken[$i] =  $summary;
+                }
             }
-          
+
+            $norolltakenallday = new \stdClass();
+            $norolltakenallday->norolltaken = 1;
+
+            if (count($classdesc['descriptions']) == 0) { // No roll taken all day means excursion or something that keeps the student away from the periods where the roll mark takes place
+                $classdesc['descriptions'][2] = $norolltakenallday;
+                $classdesc['descriptions'][5] = $norolltakenallday;
+                $classdesc['descriptions'][7] = $norolltakenallday;
+            } else if (count($classdesc['descriptions']) < 3) {
+                $p = array_keys($classdesc['descriptions']);
+
+                foreach ($classdesc['descriptions'] as $j => $description) {
+                    $missingp = array_diff($periodsrollmark, $p);
+                }
+
+                foreach ($missingp as $pm) {
+                    $classdesc['descriptions'][$pm] = $classrollnottaken[$pm];
+                }
+            }
+
+            if (count($classdesc['descriptions']) > 3) {
+
+              foreach($classdesc['descriptions'] as $j => $description) {
+
+                if (in_array($j, $periodsrollmark)) {  // Remove last two periods
+                    unset($classdesc['descriptions'][$j]);
+                }
+
+              }
+            }
+
+            $classdesc['descriptions'] = array_values($classdesc['descriptions']);
             $daydetails->classdescription = $classdesc;
+            $daydetails->classrollnottaken = $classrollnottaken;
             $days['months']['details']['det'][] = $daydetails;
         }
     });
