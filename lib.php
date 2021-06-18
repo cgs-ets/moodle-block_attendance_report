@@ -255,7 +255,6 @@ function get_student_attendance_based_on_rollmarking_primary($monthsdata, $atten
             $daydetails = new \stdClass();
             $classdesc = [];
             $classrollnottaken = []; // Collect the classes where the roll is not taken.
-            $periodsrollmark = [8,9]; // refers to the columns to fill
             $allperiods = [2,3,4,5,6,7,8];
             list($daydetails->month, $daydetails->attendancedate) = explode('_', $key);
            
@@ -301,17 +300,6 @@ function get_student_attendance_based_on_rollmarking_primary($monthsdata, $atten
                 foreach ($missingp as $pm) {
                     $classdesc['descriptions'][$pm] = $classrollnottaken[$pm];
                 }
-            }
-
-            if (count($classdesc['descriptions']) > 3) {
-
-              foreach($classdesc['descriptions'] as $j => $description) {
-
-                if (in_array($j, $periodsrollmark)) {  // Remove last two periods
-                    unset($classdesc['descriptions'][$j]);
-                }
-
-              }
             }
 
             $classdesc['descriptions'] = array_values($classdesc['descriptions']);
