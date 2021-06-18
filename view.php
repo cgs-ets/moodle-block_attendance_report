@@ -72,6 +72,7 @@ if (!$dontoprocess) {
 
     $isSenior = strpos(strtolower($profileuser->profile['CampusRoles']),'senior');
     $data->campus = is_bool($isSenior) ? 'Primary' : 'Senior';
+ 
 
     echo $OUTPUT->render_from_template('block_attendance_report/main_attendance_by_rollmarking', $data);
     

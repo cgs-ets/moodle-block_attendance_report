@@ -44,18 +44,11 @@ section.block.block_attendance_report.card.mb-3 {
     text-align: left;
 }
 
-#rollmarking-primary td,
-#rollmarking-primary th {
-    border: 1px solid rgb(134, 134, 134);
-}
-
 table#rollmarking-primary {
     font-weight: bold;
     width: 50%;
 }
-tr.rollmarking-primary-header {
-    background-color: #D9E8F6;
-}
+
 
 @media only screen and (max-width: 1024px) {
     section.block.block_attendance_report.card.mb-3 {
