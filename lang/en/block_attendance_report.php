@@ -42,6 +42,7 @@ $string['dbattbyterm_desc'] = 'Stored procedure name to retrieve student attenda
 $string['dbattbyclass'] = 'Attendance by Class';
 $string['dbattbyclass_desc'] = 'Stored procedure name to retrieve student attendance by class';
 $string['dbattbytermbyid'] = ' Full class attendance based on roll marking. Senior students';
+$string['attbasedonrollmarkinglink'] = ' Full class attendance based on roll marking';
 $string['dbattbytermbyid_desc'] = 'Stored procedure name to retrieve senior student attendance this term by id';
 $string['dbattbytermbyidprimary'] = ' Full class attendance based on roll marking. Primary students';
 $string['dbattbytermbyidprimary_desc'] = 'Stored procedure name to retrieve primary student attendance this term by id';
