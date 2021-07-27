@@ -54,6 +54,13 @@ table.att-by-class {
 }
 
 
+@media only screen and (max-width: 900px) {
+    table.att-by-class {
+        width: 100%;
+    }
+}
+
+
 @media only screen and (max-width: 1024px) {
     section.block.block_attendance_report.card.mb-3 {
         width: 100%;
