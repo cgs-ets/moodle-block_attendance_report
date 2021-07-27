@@ -148,8 +148,7 @@ function get_student_attendance_based_on_rollmarking($username, $campus)
         if ($campus == 'Senior') {
             $days = get_student_attendance_based_on_rollmarking_senior($monthsdata);
         } else {
-            $days = get_student_attendance_based_on_rollmarking_primary($monthsdata, $attendanceperiods);
-            //$days['attendanceperiods'] = $attperiods;
+            $days = get_student_attendance_based_on_rollmarking_primary($monthsdata, $attendanceperiods);           
         }
         
         return $days;

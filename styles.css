@@ -49,6 +49,10 @@ table#rollmarking-primary {
     width: 50%;
 }
 
+table.att-by-class {
+    width: fit-content;
+}
+
 
 @media only screen and (max-width: 1024px) {
     section.block.block_attendance_report.card.mb-3 {
