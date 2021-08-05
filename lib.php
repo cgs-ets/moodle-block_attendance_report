@@ -275,7 +275,7 @@ function get_student_attendance_based_on_rollmarking_primary($monthsdata, $atten
                 $summary->rolltaken = !is_null( $m['attendedflag']);
                 $summary->academicperiodtimefrom = date('H:i', strtotime( $m['academicperiodtimefrom']));
                 $summary->academicperiodtimeto = date('H:i', strtotime( $m['academicperiodtimeto']));
-                $summary->absencertypecode = $m['absencetypecode'];
+                $summary->absencertypecode = ($m['absencetypecode'] == 'EXCUR') ? $m['absencetypecode'] : ''; //ATM only display excursion
                
                 if (!is_null( $m['attendedflag']) ) { // Roll taken
                     $classdesc['descriptions'][$i] = $summary;
