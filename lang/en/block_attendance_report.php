@@ -79,4 +79,5 @@ $string['studentexcursion'] = 'Excursion';
 $string['healthClinic'] = 'Health Clinic';
 $string['markedlate'] = 'Red text - marked late';
 $string['pastoral'] = 'Pastoral';
+$string['excursion'] = 'Excursion';
 $string['userprofilenotsetup'] = 'Campus role is not set';

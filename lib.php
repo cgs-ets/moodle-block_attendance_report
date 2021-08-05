@@ -112,11 +112,11 @@ function get_student_attendance_based_on_rollmarking($username, $campus)
         );
 
         $attendancedata = $externalDB->get_recordset_sql($sql, $params);
-        
+      
         $monthsdata = [];
         
         foreach ($attendancedata as $data) {
-           
+          
             $createDate = new \DateTime($data->attendancedate);
             $day = $createDate->format("d/m/Y");
             $month = $createDate->format("F");
@@ -135,7 +135,12 @@ function get_student_attendance_based_on_rollmarking($username, $campus)
                 'classdescription' => $data->classdescription,
                 'perioddescription' => $data->description, // Periods can have different names. 
                 'academicperiodtimefrom' => $data->academicperiodtimefrom, 
-                'academicperiodtimeto' => $data->academicperiodtimeto // For Primary 
+                'academicperiodtimeto' => $data->academicperiodtimeto, // For Primary 
+                'eventdate' => $data->eventdate,
+                'absencetypecode' => $data->absencetypecode,
+                'firstexcursionoverlapin'  => $data->firstexcur_overlapin,
+                'firstexcursionoverlapout'  => $data->firstexcur_overlapout,
+
             ];
         }
         $attendanceperiods = array_unique($attendanceperiods);
@@ -181,7 +186,7 @@ function get_student_attendance_based_on_rollmarking_senior($monthsdata) {
                 $classdesc['descriptions'][] = $summary;
 
                 foreach ($m as $j => $q) {
-
+                    
                     switch ($j) {
                         case 'housesignin':
                             $daydetails->housesignin = $q;
@@ -191,6 +196,10 @@ function get_student_attendance_based_on_rollmarking_senior($monthsdata) {
                             $daydetails->nosignin = $q;
                             $daydetails->late  = $q;
                             break;
+                        case 'firstexcursionoverlapin':                          
+                            $daydetails->firstexcursionoverlapin = $q; 
+                            $daydetails->title = "Excursion $q";                          
+                            break;
                     }
                 }
             }
@@ -199,7 +208,7 @@ function get_student_attendance_based_on_rollmarking_senior($monthsdata) {
             $days['months']['details']['det'][] = $daydetails;
         }
     });
-
+  //print_object($days); exit;
     return $days;
 }
 
@@ -253,8 +262,9 @@ function get_student_attendance_based_on_rollmarking_primary($monthsdata, $atten
         foreach ($months as $key => $month) {
             $daydetails = new \stdClass();
             $classdesc = [];
-            $classrollnottaken = []; // Collect the classes where the roll is not taken.
+            $classrollnottaken = []; // Collect the classes where the roll is not taken.           
             $allperiods = [2,3,4,5,6,7,8];
+            $countexcursion = 0;
             list($daydetails->month, $daydetails->attendancedate) = explode('_', $key);
            
             foreach ($month as $i => $m) {
@@ -264,16 +274,18 @@ function get_student_attendance_based_on_rollmarking_primary($monthsdata, $atten
                 $summary->attendedflag =  $m['attendedflag'];
                 $summary->rolltaken = !is_null( $m['attendedflag']);
                 $summary->academicperiodtimefrom = date('H:i', strtotime( $m['academicperiodtimefrom']));
-                $summary->academicperiodtimeto = date('H:i', strtotime( $m['academicperiodtimeto']));;
+                $summary->academicperiodtimeto = date('H:i', strtotime( $m['academicperiodtimeto']));
+                $summary->absencertypecode = $m['absencetypecode'];
                
                 if (!is_null( $m['attendedflag']) ) { // Roll taken
                     $classdesc['descriptions'][$i] = $summary;
+
                 } else { // Roll not taken
                     
                     $classrollnottaken[$i] =  clone $summary; // Keep track of the state, as it comes from the DB.       
-                                        
+
                     if ($i > 2) { // Get the attendance state from the previous period.
-                        $lastperiod =   $classdesc['descriptions'][$i-1];
+                        $lastperiod =   $classdesc['descriptions'][$i-1];                        
                        
                     } else if ($i == 2) { // This means that in the period 2 when the rollmarking took place, there was no rollmark. 
                         $lastperiod =   $classdesc['descriptions'][$i];
@@ -281,6 +293,7 @@ function get_student_attendance_based_on_rollmarking_primary($monthsdata, $atten
 
                     $summary->attendedflag = $lastperiod->attendedflag;
                     $summary->rolltaken = $lastperiod->rolltaken;
+                    $summary->absencertypecode = $lastperiod->absencertypecode;
                     $classdesc['descriptions'][$i] =  $summary;
                 }
             
@@ -307,7 +320,7 @@ function get_student_attendance_based_on_rollmarking_primary($monthsdata, $atten
             $days['months']['details']['det'][] = $daydetails;
         }
     });
-
+    
     return $days;
 }
 

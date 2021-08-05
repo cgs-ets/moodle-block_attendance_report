@@ -23,6 +23,10 @@ section.block.block_attendance_report.card.mb-3 {
     background-color: #d9f6d9;
 }
 
+td.att-mark-exc {
+    background-color: #66a8d8;
+}
+
 .att-health-clinic {
     background-color: #b0e0e6;
 }
@@ -49,9 +53,9 @@ table#rollmarking-primary {
     width: 50%;
 }
 
-table.att-by-class {
+/* table.att-by-class {
     width: fit-content;
-}
+} */
 
 
 @media only screen and (max-width: 900px) {

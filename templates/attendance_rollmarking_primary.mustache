@@ -26,6 +26,7 @@ along with Moodle. If not, see
     <td class="att-mark-absent">{{#str}} markedabset, block_attendance_report{{/str}}</td>
     <td class="att-mark-present">{{#str}} markedpresent, block_attendance_report{{/str}}</td>
     <td class="att-norolltaken">{{#str}} norolltaken, block_attendance_report{{/str}}</td>
+    <td class="att-mark-exc">{{#str}} studentexcursion, block_attendance_report{{/str}}</td>
   </tr>  
 </table>
 <br>
@@ -59,7 +60,8 @@ along with Moodle. If not, see
       {{#descriptions}}
       {{#attendedflag}} <td class="att-mark-present" ></td> {{/attendedflag}}
       {{^rolltaken}}<td class="att-norolltaken"></td> {{/rolltaken}}
-      {{#rolltaken}}{{^attendedflag}}<td class="att-mark-absent"></td>{{/attendedflag}} {{/rolltaken}}
+      {{#rolltaken}}{{^attendedflag}}{{^absencertypecode}}<td class="att-mark-absent"></td>{{/absencertypecode}}{{/attendedflag}} {{/rolltaken}}
+      {{#rolltaken}}{{^attendedflag}}{{#absencertypecode}}<td class="att-mark-exc"></td>{{/absencertypecode}}{{/attendedflag}} {{/rolltaken}}
       {{/descriptions}}    
     {{/classdescription}}   
     </tr>

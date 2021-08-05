@@ -50,7 +50,7 @@
         {{#details}}
         {{#det}}
     <tr> 
-        <td>{{attendancedate}}</td>
+        <td>{{attendancedate}} {{#firstexcursionoverlapin}}<i class="fa fa-info-circle" title="{{title}}"></i>{{/firstexcursionoverlapin}}</td>
         {{^late}}<td class="att-mark-present">{{housesignin}}</td>{{/late}}
         {{#nosignin}}<td class="att-mark-absent">{{#str}}nosignin, block_attendance_report {{/str}}</td>{{/nosignin}}
         {{#classdescription}}
