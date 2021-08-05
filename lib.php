@@ -116,7 +116,7 @@ function get_student_attendance_based_on_rollmarking($username, $campus)
         $monthsdata = [];
         
         foreach ($attendancedata as $data) {
-          
+           
             $createDate = new \DateTime($data->attendancedate);
             $day = $createDate->format("d/m/Y");
             $month = $createDate->format("F");
@@ -140,6 +140,7 @@ function get_student_attendance_based_on_rollmarking($username, $campus)
                 'absencetypecode' => $data->absencetypecode,
                 'firstexcursionoverlapin'  => $data->firstexcur_overlapin,
                 'firstexcursionoverlapout'  => $data->firstexcur_overlapout,
+                'backgroundcolour' => $data->backgroundcolour,
 
             ];
         }
@@ -155,7 +156,7 @@ function get_student_attendance_based_on_rollmarking($username, $campus)
         } else {
             $days = get_student_attendance_based_on_rollmarking_primary($monthsdata, $attendanceperiods);           
         }
-        
+     
         return $days;
     } catch (\Exception $ex) {
      
@@ -177,12 +178,14 @@ function get_student_attendance_based_on_rollmarking_senior($monthsdata) {
             list($daydetails->month, $daydetails->attendancedate) = explode('_', $key);
 
             foreach ($month as $i => $m) {
+               
                 $summary = new \stdClass();
                 $summary->description = $m['classdescription'];
                 $summary->attendedflag =  $m['attendedflag'];
                 $summary->norolltaken = (is_null($m['attendedflag']) && is_null($m['latearrivalflag']));
                 $summary->latearrivalflag = !is_null($m['latearrivalflag']) && $m['latearrivalflag'] != 0;
                 $summary->latearrivaltime = $m['latearrivaltime'];
+                $summary->cssclass = ($m['backgroundcolour'] == "#add7e5" ? "att-mark-exc" : ''); //TODO: 
                 $classdesc['descriptions'][] = $summary;
 
                 foreach ($m as $j => $q) {
@@ -198,8 +201,9 @@ function get_student_attendance_based_on_rollmarking_senior($monthsdata) {
                             break;
                         case 'firstexcursionoverlapin':                          
                             $daydetails->firstexcursionoverlapin = $q; 
-                            $daydetails->title = "Excursion $q";                          
+                            $daydetails->title = "Excursion $q";          
                             break;
+                      
                     }
                 }
             }
@@ -208,7 +212,6 @@ function get_student_attendance_based_on_rollmarking_senior($monthsdata) {
             $days['months']['details']['det'][] = $daydetails;
         }
     });
-  //print_object($days); exit;
     return $days;
 }
 

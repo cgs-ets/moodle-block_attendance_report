@@ -23,6 +23,7 @@
       <td class="att-norolltaken">{{#str}} norolltaken, block_attendance_report{{/str}}</td>
       <td class="att-mark-absent">{{#str}} markedabset, block_attendance_report{{/str}}</td>
       <td class="att-mark-present">{{#str}} markedpresent, block_attendance_report{{/str}}</td>
+      <td class="att-mark-exc">{{#str}} studentexcursion, block_attendance_report{{/str}}</td>
     </tr>
 </table>
   <br>
@@ -55,6 +56,7 @@
         {{#nosignin}}<td class="att-mark-absent">{{#str}}nosignin, block_attendance_report {{/str}}</td>{{/nosignin}}
         {{#classdescription}}
           {{#descriptions}}
+          
             {{#attendedflag}}{{^latearrivalflag}}  <td class="att-mark-present" > {{description}} </td> {{/latearrivalflag}}{{/attendedflag}}
             
             {{#attendedflag}} 
@@ -66,7 +68,9 @@
               {{/latearrivalflag}}
             {{/attendedflag}}
 
-            {{^attendedflag}} {{^norolltaken}} <td class="att-mark-absent" >{{description}}</td> {{/norolltaken}} {{/attendedflag}}
+            {{^attendedflag}} {{^norolltaken}} 
+                <td {{^cssclass}} class="att-mark-absent" {{/cssclass}} {{#cssclass}} class="{{cssclass}}"{{/cssclass}}>{{description}}</td> 
+              {{/norolltaken}} {{/attendedflag}}
             {{^attendedflag}}{{#norolltaken}} <td class="att-norolltaken" >{{description}}</td> {{/norolltaken}}{{/attendedflag}}
           {{/descriptions}}    
         {{/classdescription}}          
